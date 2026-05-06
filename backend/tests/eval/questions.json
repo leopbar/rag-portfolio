@@ -1,12 +1,122 @@
 [
   {
     "id": 1,
-    "question": "What does Adam Smith say about the division of labor?",
-    "expected_source": {"book": "I", "chapter": "Chapter 1"}
+    "question": "What does Adam Smith say about the division of labour?",
+    "expected_book": "BOOK I",
+    "expected_chapter": "CHAPTER I"
   },
   {
     "id": 2,
-    "question": "How does Smith define productive and unproductive labor?",
-    "expected_source": {"book": "II", "chapter": "Chapter 3"}
+    "question": "How does Smith explain the origin of money?",
+    "expected_book": "BOOK I",
+    "expected_chapter": "CHAPTER IV"
+  },
+  {
+    "id": 3,
+    "question": "What is the difference between use value and exchange value?",
+    "expected_book": "BOOK I",
+    "expected_chapter": "CHAPTER IV"
+  },
+  {
+    "id": 4,
+    "question": "How does Smith define the natural price of a commodity?",
+    "expected_book": "BOOK I",
+    "expected_chapter": "CHAPTER VII"
+  },
+  {
+    "id": 5,
+    "question": "What are wages according to Smith and what determines them?",
+    "expected_book": "BOOK I",
+    "expected_chapter": "CHAPTER VIII"
+  },
+  {
+    "id": 6,
+    "question": "What does Smith say about the profits of stock?",
+    "expected_book": "BOOK I",
+    "expected_chapter": "CHAPTER IX"
+  },
+  {
+    "id": 7,
+    "question": "How does Smith describe the rent of land?",
+    "expected_book": "BOOK I",
+    "expected_chapter": "CHAPTER XI"
+  },
+  {
+    "id": 8,
+    "question": "What is productive versus unproductive labour?",
+    "expected_book": "BOOK II",
+    "expected_chapter": "CHAPTER III"
+  },
+  {
+    "id": 9,
+    "question": "What does Smith say about the accumulation of capital?",
+    "expected_book": "BOOK II",
+    "expected_chapter": "CHAPTER III"
+  },
+  {
+    "id": 10,
+    "question": "How does Smith view the role of banks and paper money?",
+    "expected_book": "BOOK II",
+    "expected_chapter": "CHAPTER II"
+  },
+  {
+    "id": 11,
+    "question": "What is the mercantile system according to Smith?",
+    "expected_book": "BOOK IV",
+    "expected_chapter": "CHAPTER I"
+  },
+  {
+    "id": 12,
+    "question": "What does Smith say about free trade and restraints on imports?",
+    "expected_book": "BOOK IV",
+    "expected_chapter": "CHAPTER II"
+  },
+  {
+    "id": 13,
+    "question": "How does Smith explain the invisible hand?",
+    "expected_book": "BOOK IV",
+    "expected_chapter": "CHAPTER II"
+  },
+  {
+    "id": 14,
+    "question": "What is Smith's view on colonies and colonial trade?",
+    "expected_book": "BOOK IV",
+    "expected_chapter": "CHAPTER VII"
+  },
+  {
+    "id": 15,
+    "question": "What does Smith say about the agricultural system of political economy?",
+    "expected_book": "BOOK IV",
+    "expected_chapter": "CHAPTER IX"
+  },
+  {
+    "id": 16,
+    "question": "What are the proper expenses of the sovereign according to Smith?",
+    "expected_book": "BOOK V",
+    "expected_chapter": "CHAPTER I"
+  },
+  {
+    "id": 17,
+    "question": "How does Smith describe the duties of the sovereign?",
+    "expected_book": "BOOK V",
+    "expected_chapter": "CHAPTER I"
+  },
+  {
+    "id": 18,
+    "question": "What are Smith's four maxims of taxation?",
+    "expected_book": "BOOK V",
+    "expected_chapter": "CHAPTER II"
+  },
+  {
+    "id": 19,
+    "question": "What does Smith say about public debt and its effects?",
+    "expected_book": "BOOK V",
+    "expected_chapter": "CHAPTER III"
+  },
+  {
+    "id": 20,
+    "question": "How does Smith describe the pin factory as an example of division of labour?",
+    "expected_book": "BOOK I",
+    "expected_chapter": "CHAPTER I"
   }
 ]
