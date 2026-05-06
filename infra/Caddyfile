@@ -1,0 +1,12 @@
+# Replace rag.yourdomain.com with your actual domain before deploying
+rag.yourdomain.com {
+    reverse_proxy frontend:3000
+}
+
+api.rag.yourdomain.com {
+    reverse_proxy backend:8000
+}
+
+langfuse.rag.yourdomain.com {
+    reverse_proxy langfuse:3000
+}
