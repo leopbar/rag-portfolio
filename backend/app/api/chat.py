@@ -7,7 +7,9 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import settings
 from app.db.session import get_session
+from app.observability.langfuse_client import observe_chat
 from app.rag.generator import generate_stream
 from app.rag.retriever import RetrievedChunk, retrieve
 
@@ -46,24 +48,27 @@ async def _event_stream(
       - sources:      data: [SOURCES] <json>\n\n
       - end:          data: [DONE]\n\n
     """
-    # Send sources first so the frontend can render cards immediately
-    sources = [
-        SourceInfo(
-            id=c.id,
-            book=c.book,
-            chapter=c.chapter,
-            section=c.section,
-            score=round(c.score, 4),
-        ).model_dump()
-        for c in chunks
-    ]
-    yield f"data: [SOURCES] {json.dumps(sources)}\n\n"
+    with observe_chat(question) as trace:
+        sources = [
+            SourceInfo(
+                id=c.id,
+                book=c.book,
+                chapter=c.chapter,
+                section=c.section,
+                score=round(c.score, 4),
+            ).model_dump()
+            for c in chunks
+        ]
+        trace.log_retrieval(chunks)
+        yield f"data: [SOURCES] {json.dumps(sources)}\n\n"
 
-    # Stream LLM tokens
-    async for token in generate_stream(question, chunks, history):
-        yield f"data: {token}\n\n"
+        answer_parts: list[str] = []
+        async for token in generate_stream(question, chunks, history):
+            answer_parts.append(token)
+            yield f"data: {token}\n\n"
 
-    yield "data: [DONE]\n\n"
+        trace.log_generation("".join(answer_parts), model=settings.llm_model)
+        yield "data: [DONE]\n\n"
 
 
 @router.post("/")
