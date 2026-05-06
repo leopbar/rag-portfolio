@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "question": "What does Adam Smith say about the division of labor?",
+    "expected_source": {"book": "I", "chapter": "Chapter 1"}
+  },
+  {
+    "id": 2,
+    "question": "How does Smith define productive and unproductive labor?",
+    "expected_source": {"book": "II", "chapter": "Chapter 3"}
+  }
+]
