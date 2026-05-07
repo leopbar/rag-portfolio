@@ -1,51 +1,51 @@
 # Ask the Classics — RAG Chatbot Portfolio
-## Resumo de Desenvolvimento e Estado Atual
+## Development Summary and Current Status
 
 ---
 
-## 📋 Visão Geral do Projeto
+## Project Overview
 
-**Objetivo:** Criar um chatbot RAG (Retrieval-Augmented Generation) funcionando como portfólio profissional de ML/AI Engineer júnior. O sistema responde perguntas sobre "The Wealth of Nations" (Adam Smith, 1776) com citações exatas do livro.
+**Objective:** Build a RAG (Retrieval-Augmented Generation) chatbot serving as a junior ML/AI Engineer portfolio project. The system answers questions about "The Wealth of Nations" (Adam Smith, 1776) with exact citations from the book.
 
-**Status:** MVP funcional, testado localmente. Pronto para deploy em produção.
+**Status:** Functional MVP, locally tested. Ready for production deployment.
 
-**Repositório GitHub:** [https://github.com/leopbar/rag-portfolio](https://github.com/leopbar/rag-portfolio)
+**GitHub Repository:** [https://github.com/leopbar/rag-portfolio](https://github.com/leopbar/rag-portfolio)
 
 ---
 
-## 🏗️ Arquitetura Implementada
+## Implemented Architecture
 
-### Stack Tecnológico
+### Tech Stack
 ```
 Frontend:    Next.js 15 + TypeScript + Tailwind + shadcn/ui
 Auth:        NextAuth v5 + Google OAuth
 Backend:     FastAPI (Python 3.12) + LlamaIndex
-Database:    Postgres (porta 5433) + pgvector (1536 dims)
+Database:    Postgres (port 5433) + pgvector (1536 dims)
 Embeddings:  OpenAI text-embedding-3-small
 LLM:         OpenAI gpt-4o-mini
 Observability: Langfuse (self-hosted via Docker)
 CI/CD:       GitHub Actions (lint + tests)
-Infra:       Docker Compose
+Infrastructure: Docker Compose
 ```
 
-### Fluxo da Aplicação
-1. Usuário autentica com Google OAuth
-2. Digita pergunta em linguagem natural
-3. Backend gera embedding (OpenAI)
-4. Busca vetorial no Postgres com cosine similarity (pgvector)
-5. Retorna top-5 chunks com metadata {book, chapter, section}
-6. LLM gera resposta em streaming SSE
-7. Frontend renderiza tokens em tempo real + cards de fonte
+### Application Flow
+1. User authenticates via Google OAuth
+2. Types question in natural language
+3. Backend generates embedding (OpenAI)
+4. Vector search in Postgres with cosine similarity (pgvector)
+5. Returns top-5 chunks with metadata {book, chapter, section}
+6. LLM generates response in streaming SSE
+7. Frontend renders tokens in real-time + source cards
 
 ---
 
-## 📁 Estrutura do Repositório
+## Repository Structure
 
 ```
 rag-portfolio/
 ├── backend/                     # FastAPI + RAG (Python)
 │   ├── app/
-│   │   ├── main.py             # Entry point FastAPI
+│   │   ├── main.py             # FastAPI entry point
 │   │   ├── core/               # Config, logging
 │   │   ├── api/                # HTTP layer (health, chat endpoints)
 │   │   ├── rag/                # Chunker, embedder, retriever, generator
@@ -55,22 +55,22 @@ rag-portfolio/
 │   ├── scripts/                # download_book.py
 │   ├── tests/                  # unit, integration, eval suites
 │   ├── data/                   # wealth-of-nations.txt (gitignored)
-│   ├── pyproject.toml          # Dependências uv
+│   ├── pyproject.toml          # uv dependencies
 │   ├── Dockerfile              # Production image
-│   └── .env                    # Variáveis locais (OpenAI key, etc)
+│   └── .env                    # Local environment variables
 │
 ├── frontend/                    # Next.js + TypeScript
 │   ├── app/
-│   │   ├── page.tsx            # Chat principal
+│   │   ├── page.tsx            # Main chat page
 │   │   ├── layout.tsx          # HTML base
-│   │   ├── login/page.tsx      # Login com Google
+│   │   ├── login/page.tsx      # Google login page
 │   │   └── api/auth/[...nextauth]/route.ts  # NextAuth handler
 │   ├── components/
 │   │   ├── chat/               # ChatWindow, MessageBubble, SourceCard
-│   │   └── layout/             # Header (with user profile + logout)
+│   │   └── layout/             # Header (user profile + logout)
 │   ├── hooks/                  # useChat (SSE streaming state)
-│   ├── lib/                    # API client, utils
-│   ├── auth.ts                 # NextAuth config
+│   ├── lib/                    # API client, utilities
+│   ├── auth.ts                 # NextAuth configuration
 │   ├── proxy.ts                # Route protection middleware
 │   ├── .env.local              # Google OAuth + API URL (gitignored)
 │   ├── Dockerfile              # Production image
@@ -79,172 +79,172 @@ rag-portfolio/
 ├── infra/
 │   ├── docker-compose.yml      # 4 services: db, langfuse, backend, frontend
 │   ├── Caddyfile               # HTTPS proxy (for VPS deploy)
-│   └── .env.example            # Variáveis template
+│   └── .env.example            # Environment variables template
 │
 ├── .github/workflows/
 │   └── ci.yml                  # GitHub Actions: lint + tests
 │
 ├── .gitignore                  # Python, Node, .env, data/
-├── .editorconfig               # Consistência de formatação
+├── .editorconfig               # Formatting consistency
 ├── LICENSE                     # MIT
-└── README.md                   # Documentação do projeto
+└── README.md                   # Project documentation
 
 ```
 
 ---
 
-## 🔧 Setup Local (Como Rodar Agora)
+## Local Setup (How to Run)
 
-### Pré-requisitos
+### Prerequisites
 - Python 3.12 + uv
 - Node 20 + npm
 - Docker Desktop
-- Chave da OpenAI API
-- Credenciais Google OAuth (Client ID + Secret)
+- OpenAI API key
+- Google OAuth credentials (Client ID + Secret)
 
-### Passo 1: Backend + Database
+### Step 1: Backend + Database
 
 ```bash
-# Subir Postgres + pgvector (porta 5433)
+# Start Postgres + pgvector (port 5433)
 docker compose -f infra/docker-compose.yml up db -d
 
-# Instalar dependências backend
+# Install backend dependencies
 cd backend
 uv pip install -e ".[dev]" --system
 
-# Baixar o livro
+# Download the book
 python scripts/download_book.py
 
-# Fazer ingestão (gera embeddings + popula Postgres)
+# Run ingestion (generates embeddings + populates Postgres)
 python -m app.rag.ingest
 
-# Rodar backend (porta 8000)
+# Start backend (port 8000)
 python -m uvicorn app.main:app --port 8000
 ```
 
-### Passo 2: Frontend
+### Step 2: Frontend
 
 ```bash
 cd frontend
 
-# Preencher .env.local com:
-# GOOGLE_CLIENT_ID=seu_client_id
-# GOOGLE_CLIENT_SECRET=seu_client_secret
+# Fill .env.local with:
+# GOOGLE_CLIENT_ID=your_client_id
+# GOOGLE_CLIENT_SECRET=your_client_secret
 
-# Rodar
-npm run dev  # Abre em http://localhost:3000
+# Run
+npm run dev  # Opens at http://localhost:3000
 ```
 
-### URLs Locais
-- **Frontend:** http://localhost:3000 (com auth Google)
+### Local URLs
+- **Frontend:** http://localhost:3000 (with Google auth)
 - **Backend:** http://localhost:8000 (`/health`, `/chat/`)
 - **Postgres:** localhost:5433
-- **Langfuse:** http://localhost:3001 (opcional)
+- **Langfuse:** http://localhost:3001 (optional)
 
 ---
 
-## 🎯 O Que Foi Implementado
+## What Was Implemented
 
-### Dia 0 — Repositório
-✅ GitHub criado  
-✅ `.gitignore` configurado  
-✅ Estrutura inicial  
+### Day 0 — Repository
+- GitHub created
+- `.gitignore` configured
+- Initial structure
 
-### Dia 1-2 — Backend Setup
-✅ FastAPI com CORS dinâmico  
-✅ Postgres + pgvector (Docker)  
-✅ Migrations SQL (chunks table + HNSW index)  
-✅ Config typado (Pydantic)  
-✅ Script de download (Project Gutenberg)  
+### Day 1-2 — Backend Setup
+- FastAPI with dynamic CORS
+- Postgres + pgvector (Docker)
+- SQL migrations (chunks table + HNSW index)
+- Typed config (Pydantic)
+- Download script (Project Gutenberg)
 
-### Dia 3-4 — Pipeline Ingestão
-✅ Chunker hierárquico (detecta BOOK/CHAPTER, 512 tokens overlap 64)  
-✅ Embedder (OpenAI batch com delay rate-limit)  
-✅ Ingestão completa (2314 → 1168 chunks após regex fix)  
-✅ Testes unitários do chunker  
+### Day 3-4 — Ingestion Pipeline
+- Hierarchical chunker (detects BOOK/CHAPTER, 512 tokens overlap 64)
+- Embedder (OpenAI batch with rate-limit delay)
+- Complete ingestion (2314 → 1168 chunks after regex fix)
+- Chunker unit tests
 
-### Dia 5 — Endpoint /chat
-✅ Retriever (cosine similarity pgvector)  
-✅ Generator (prompt + LLM streaming)  
-✅ SSE streaming (`data: [SOURCES] json` + tokens)  
-✅ Integração Langfuse para tracing  
+### Day 5 — /chat Endpoint
+- Retriever (cosine similarity pgvector)
+- Generator (prompt + LLM streaming)
+- SSE streaming (`data: [SOURCES] json` + tokens)
+- Langfuse tracing integration
 
-### Dia 6-7 — Observabilidade + Eval
-✅ Langfuse tracing no `/chat`  
-✅ Suite de 20 perguntas padrão  
-✅ Script de avaliação (recall@5)  
+### Day 6-7 — Observability + Eval
+- Langfuse tracing in `/chat`
+- Suite of 20 standard questions
+- Evaluation script (recall@5)
 
-### Dia 8-9 — Frontend
-✅ Next.js 15 + Tailwind + shadcn/ui  
-✅ ChatWindow com streaming (Vercel AI SDK)  
-✅ SourceCard com metadata  
-✅ MessageBubble com markdown  
+### Day 8-9 — Frontend
+- Next.js 15 + Tailwind + shadcn/ui
+- ChatWindow with streaming (Vercel AI SDK)
+- SourceCard with metadata
+- MessageBubble with markdown
 
-### Dia 10-13 — Polimento + CI
-✅ README raiz com arquitetura  
-✅ GitHub Actions CI (ruff + pytest + tsc)  
-✅ .editorconfig  
-✅ Testado localmente funcionando  
+### Day 10-13 — Polish + CI
+- Root README with architecture
+- GitHub Actions CI (ruff + pytest + tsc)
+- .editorconfig
+- Locally tested and working
 
-### Google Auth (Novo)
-✅ NextAuth v5 integrado  
-✅ Google OAuth configurado  
-✅ Página de login com botão Google  
-✅ Header com nome/foto do usuário + logout  
-✅ Middleware protegendo rotas  
-✅ `.env.local` com credenciais  
+### Google Auth (Added)
+- NextAuth v5 integrated
+- Google OAuth configured
+- Login page with Google button
+- Header with user name/photo + logout
+- Middleware protecting routes
+- `.env.local` with credentials
 
 ---
 
-## 📊 Métricas de Sucesso (Local)
+## Success Metrics (Local)
 
-- **Chunks ingestados:** 1168 (com metadata correta: BOOK V., CHAPTER III., etc)
+- **Chunks ingested:** 1168 (with correct metadata: BOOK V., CHAPTER III., etc)
 - **Embedding dimension:** 1536 (OpenAI text-embedding-3-small)
-- **Retrieval:** <150ms latência (pgvector HNSW)
-- **Streaming:** SSE tokens aparecem em tempo real
-- **Auth:** Google OAuth funcionando, usuário autenticado
+- **Retrieval:** <150ms latency (pgvector HNSW)
+- **Streaming:** SSE tokens appear in real-time
+- **Auth:** Google OAuth working, user authenticated
 
 ---
 
-## ⚠️ Issues Resolvidos Durante Desenvolvimento
+## Issues Resolved During Development
 
-1. **CORS bloqueando frontend (porta 3001 vs 3000)**
-   - Solução: Configurar `allow_origins=["*"]` em debug mode no `app/main.py`
+1. **CORS blocking frontend (port 3001 vs 3000)**
+   - Solution: Configure `allow_origins=["*"]` in debug mode in `app/main.py`
 
-2. **Regex do chunker não detectando BOOK/CHAPTER**
-   - Problema: Gutenberg usa `BOOK I.` (com ponto), regex esperava `BOOK I` (sem ponto)
-   - Solução: Adicionar `\.?` no regex para tornar o ponto opcional
+2. **Chunker regex not detecting BOOK/CHAPTER**
+   - Problem: Gutenberg uses `BOOK I.` (with period), regex expected `BOOK I` (no period)
+   - Solution: Add `\.?` in regex to make period optional
 
-3. **Next.js 16 deprecando `middleware.ts`**
-   - Solução: Renomear para `proxy.ts`
+3. **Next.js 16 deprecating `middleware.ts`**
+   - Solution: Rename to `proxy.ts`
 
-4. **Porta 5432 ocupada por Postgres local**
-   - Solução: Usar porta 5433 no Docker Compose, atualizar `.env`
+4. **Port 5432 occupied by local Postgres**
+   - Solution: Use port 5433 in Docker Compose, update `.env`
 
-5. **`pyproject.toml` quebrado (hatchling não encontrava pacote)**
-   - Solução: Adicionar `[tool.hatch.build.targets.wheel] packages = ["app"]`
+5. **`pyproject.toml` broken (hatchling couldn't find package)**
+   - Solution: Add `[tool.hatch.build.targets.wheel] packages = ["app"]`
 
 ---
 
-## 🚀 Próximos Passos (Quando Continuar)
+## Next Steps (When Continuing)
 
-### Deploy na VPS Hostinger (Não iniciado)
-- [ ] Configurar SSH + credenciais na VPS
-- [ ] Deploy Docker Compose na VPS
-- [ ] Configurar Caddy para HTTPS
-- [ ] GitHub Actions CD (deploy SSH automático)
-- [ ] URL pública: `https://rag.seudominio.com`
+### VPS Hostinger Deployment (Not started)
+- [ ] Configure SSH + credentials on VPS
+- [ ] Deploy Docker Compose on VPS
+- [ ] Configure Caddy for HTTPS
+- [ ] GitHub Actions CD (automatic SSH deployment)
+- [ ] Public URL: `https://rag.yourdomain.com`
 
-### Melhorias Opcionais (Não no escopo MVP)
-- [ ] Reranking (cohere-rerank para melhorar precision)
-- [ ] Hybrid search (BM25 + vetorial)
+### Optional Improvements (Out of MVP scope)
+- [ ] Reranking (cohere-rerank for better precision)
+- [ ] Hybrid search (BM25 + vector)
 - [ ] Eval framework (Ragas)
-- [ ] Multi-livro com filtros
-- [ ] Agente com ferramentas
+- [ ] Multi-book with filters
+- [ ] Agent with tools
 
 ---
 
-## 📝 Variáveis de Ambiente Necessárias
+## Required Environment Variables
 
 ### Backend (`backend/.env`)
 ```
@@ -260,38 +260,38 @@ LANGFUSE_HOST=http://localhost:3001
 ```
 NEXTAUTH_SECRET=91oRssoy7A14kbqS/sHG7UM4/1DTFPUBwcofzwuvAck=
 NEXTAUTH_URL=http://localhost:3000
-GOOGLE_CLIENT_ID=seu_client_id_aqui
-GOOGLE_CLIENT_SECRET=seu_client_secret_aqui
+GOOGLE_CLIENT_ID=your_client_id_here
+GOOGLE_CLIENT_SECRET=your_client_secret_here
 NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 ---
 
-## 🔐 Segurança da Autenticação
+## Authentication Security
 
-**Abordagem:** OAuth 2.0 com Google (sem armazenar senhas)
+**Approach:** OAuth 2.0 with Google (no passwords stored)
 
-**Por que é seguro:**
-- Senhas nunca tocam seu servidor ✅
-- Google gerencia 2FA automaticamente ✅
-- Phishing impossível (redirecionamento Google) ✅
-- Token JWT assinado e verificado ✅
+**Why it's secure:**
+- Passwords never touch your server
+- Google manages 2FA automatically
+- Phishing impossible (Google redirect)
+- Signed and verified JWT token
 
-**Fluxo:**
-1. Usuário clica "Sign in with Google"
-2. Redireciona para Google (seu site não toca senha)
-3. Google autentica e volta com JWT
-4. NextAuth valida e cria sessão
-5. Middleware protege `/` e `/api/chat`
+**Flow:**
+1. User clicks "Sign in with Google"
+2. Redirects to Google (your site never sees password)
+3. Google authenticates and returns JWT
+4. NextAuth validates and creates session
+5. Middleware protects `/` and `/api/chat`
 
 ---
 
-## 📚 Commits Principais no GitHub
+## Main Commits on GitHub
 
 ```
 2b64b78  Merge PR #4: README + CI + bugfixes
 d15824b  Merge PR #3: Frontend (Next.js + chat)
-bd7f4e4  Merge PR #2: Backend completo
+bd7f4e4  Merge PR #2: Backend complete
 c2fdf21  fix: CORS + regex chunker
 ad44208  docs: README + CI workflow
 f7b84b7  chore: Frontend bootstrap
@@ -300,55 +300,55 @@ f7b84b7  chore: Frontend bootstrap
 
 ---
 
-## 🎓 O Que Este Projeto Demonstra para Recrutadores
+## What This Project Demonstrates to Recruiters
 
-1. **RAG real end-to-end** — não é tutorial, é produção
-2. **Decisões técnicas justificadas** — chunking hierárquico, HNSW, streaming SSE
-3. **Segurança** — OAuth2, sem senhas, middleware protegido
-4. **Observabilidade** — Langfuse tracing integrado
-5. **Qualidade** — CI automático, testes, linting
-6. **DevOps** — Docker, composição de serviços, migrations versionadas
-7. **Git profissional** — PRs incrementais, commits atômicos, histórico limpo
-8. **Frontend moderno** — Next.js 15, TypeScript strict, streaming real-time
-9. **Citação de fontes** — resolve problema de alucinação LLM
-
----
-
-## 💾 Salvos Localmente (Não Versionados)
-
-- `backend/data/wealth-of-nations.txt` — livro baixado (~2.4MB)
-- `backend/.env` — chave OpenAI (no `.gitignore`)
-- `frontend/.env.local` — credenciais Google (no `.gitignore`)
-- `infra/volumes/postgres_data/` — dados Postgres
+1. **Real end-to-end RAG** — not a tutorial, production-grade
+2. **Justified technical decisions** — hierarchical chunking, HNSW, streaming SSE
+3. **Security** — OAuth2, no passwords, protected middleware
+4. **Observability** — Langfuse tracing integrated
+5. **Quality** — automatic CI, tests, linting
+6. **DevOps** — Docker, service composition, versioned migrations
+7. **Professional git** — incremental PRs, atomic commits, clean history
+8. **Modern frontend** — Next.js 15, TypeScript strict, real-time streaming
+9. **Source citation** — solves LLM hallucination problem
 
 ---
 
-## 📞 Contato para Continuação
+## Saved Locally (Not Versioned)
 
-Se você ou outra IA precisar continuar este projeto:
-
-1. **Clonar repo:** `git clone https://github.com/leopbar/rag-portfolio.git`
-2. **Ler este documento** (PROJETO_RESUMO.md)
-3. **Seguir "Setup Local"** para rodar tudo
-4. **Conferir branch/PR atual** no GitHub
-5. **Próximo passo natural:** Deploy na VPS Hostinger (se quiser URL pública)
+- `backend/data/wealth-of-nations.txt` — downloaded book (~2.4MB)
+- `backend/.env` — OpenAI key (in `.gitignore`)
+- `frontend/.env.local` — Google credentials (in `.gitignore`)
+- `infra/volumes/postgres_data/` — Postgres data
 
 ---
 
-## ✅ Checklist de Conclusão
+## Contact for Continuation
 
-- [x] Backend funcional (FastAPI + RAG pipeline)
-- [x] Ingestão funcionando (1168 chunks com metadata)
-- [x] Endpoint `/chat` com streaming
-- [x] Frontend funcional (Next.js + chat)
-- [x] Autenticação Google OAuth
-- [x] Testes locais passando
-- [x] CI configurado no GitHub
-- [x] Repositório público com histórico limpo
-- [ ] Deploy na VPS Hostinger (próximo passo)
+If you or another AI need to continue this project:
+
+1. **Clone repo:** `git clone https://github.com/leopbar/rag-portfolio.git`
+2. **Read this document** (PROJETO_RESUMO.md)
+3. **Follow "Local Setup"** to run everything
+4. **Check current branch/PR** on GitHub
+5. **Next natural step:** VPS Hostinger deployment (for public URL)
 
 ---
 
-**Última atualização:** 2026-05-06 21:50 UTC  
-**Versão:** 0.1.0 MVP  
-**Status:** ✅ Operacional Localmente | ⏳ Pronto para Deploy
+## Completion Checklist
+
+- [x] Functional backend (FastAPI + RAG pipeline)
+- [x] Working ingestion (1168 chunks with metadata)
+- [x] `/chat` endpoint with streaming
+- [x] Functional frontend (Next.js + chat)
+- [x] Google OAuth authentication
+- [x] Local tests passing
+- [x] CI configured on GitHub
+- [x] Public repo with clean history
+- [ ] VPS Hostinger deployment (next step)
+
+---
+
+**Last Updated:** 2026-05-07  
+**Version:** 0.1.0 MVP  
+**Status:** Fully Operational Locally | Ready for Deployment

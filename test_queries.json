@@ -1,0 +1,206 @@
+{
+  "evaluation_suite": {
+    "metadata": {
+      "book": "The Wealth of Nations (Adam Smith, 1776)",
+      "total_queries": 24,
+      "created_date": "2026-05-06",
+      "purpose": "Test RAG system for: retrieval accuracy, hallucination detection, source citation quality"
+    },
+    "categories": {
+      "core_concepts": {
+        "description": "Fundamental concepts from the book",
+        "queries": [
+          {
+            "id": "C1",
+            "question": "What does Adam Smith understand by 'division of labor'?",
+            "expected_behavior": "Should retrieve Book I, Chapter I passages about division of labor",
+            "should_cite_sources": true,
+            "difficulty": "easy"
+          },
+          {
+            "id": "C2",
+            "question": "What is the relationship between division of labor and the wealth of nations?",
+            "expected_behavior": "Should explain how division increases productivity",
+            "should_cite_sources": true,
+            "difficulty": "medium"
+          },
+          {
+            "id": "C3",
+            "question": "How does Adam Smith define 'natural price' versus 'market price'?",
+            "expected_behavior": "Should retrieve Book I passages on natural vs market prices",
+            "should_cite_sources": true,
+            "difficulty": "medium"
+          },
+          {
+            "id": "C4",
+            "question": "What does Smith say about the 'invisible hand'?",
+            "expected_behavior": "Should find the famous 'invisible hand' reference (Book IV)",
+            "should_cite_sources": true,
+            "difficulty": "easy"
+          }
+        ]
+      },
+      "historical_examples": {
+        "description": "Specific examples and case studies mentioned in the book",
+        "queries": [
+          {
+            "id": "H1",
+            "question": "What is the pin factory example that Smith uses?",
+            "expected_behavior": "Should retrieve Book I, Chapter I: pin factory example",
+            "should_cite_sources": true,
+            "difficulty": "easy"
+          },
+          {
+            "id": "H2",
+            "question": "How does Smith describe the trade between England and Portugal?",
+            "expected_behavior": "Should find Book IV discussion of Portugal trade",
+            "should_cite_sources": true,
+            "difficulty": "hard"
+          },
+          {
+            "id": "H3",
+            "question": "Does Smith mention anything about looms and weavers?",
+            "expected_behavior": "Should find references to looms/weaving in textile industry",
+            "should_cite_sources": true,
+            "difficulty": "medium"
+          }
+        ]
+      },
+      "philosophical_positions": {
+        "description": "Smith's views on society, government, morality",
+        "queries": [
+          {
+            "id": "P1",
+            "question": "What is Smith's view on the role of government in the economy?",
+            "expected_behavior": "Should explain Smith's laissez-faire philosophy from Book IV",
+            "should_cite_sources": true,
+            "difficulty": "medium"
+          },
+          {
+            "id": "P2",
+            "question": "Does Smith believe that self-interest is good or bad?",
+            "expected_behavior": "Should explain how self-interest can benefit society",
+            "should_cite_sources": true,
+            "difficulty": "medium"
+          },
+          {
+            "id": "P3",
+            "question": "What does Smith think about monopolies?",
+            "expected_behavior": "Should retrieve Book I passages criticizing monopolies",
+            "should_cite_sources": true,
+            "difficulty": "medium"
+          }
+        ]
+      },
+      "hallucination_tests": {
+        "description": "Questions about things NOT in the book - system should reject or be honest",
+        "queries": [
+          {
+            "id": "HALL1",
+            "question": "What does Adam Smith say about Bitcoin or digital currencies?",
+            "expected_behavior": "Should NOT hallucinate - book doesn't mention cryptocurrency. Should indicate lack of information.",
+            "should_hallucinate": false,
+            "difficulty": "easy"
+          },
+          {
+            "id": "HALL2",
+            "question": "What was Smith's opinion on solar energy?",
+            "expected_behavior": "Should reject - solar energy didn't exist in 1776",
+            "should_hallucinate": false,
+            "difficulty": "easy"
+          },
+          {
+            "id": "HALL3",
+            "question": "Does Smith talk about artificial intelligence in his writings?",
+            "expected_behavior": "Should clearly state book doesn't cover AI/automation in modern sense",
+            "should_hallucinate": false,
+            "difficulty": "easy"
+          },
+          {
+            "id": "HALL4",
+            "question": "What was Smith's email address for business contact?",
+            "expected_behavior": "Should not fabricate contact information",
+            "should_hallucinate": false,
+            "difficulty": "easy"
+          },
+          {
+            "id": "HALL5",
+            "question": "In which book does Smith propose a universal basic income system?",
+            "expected_behavior": "Should not invent specific proposals not in the text",
+            "should_hallucinate": false,
+            "difficulty": "medium"
+          }
+        ]
+      },
+      "ambiguous_multi_part": {
+        "description": "Questions testing retrieval with ambiguity or multiple sub-questions",
+        "queries": [
+          {
+            "id": "AMB1",
+            "question": "Discuss labor and wages according to Smith.",
+            "expected_behavior": "Should retrieve multiple relevant sections (wage theory, labor division)",
+            "should_cite_sources": true,
+            "difficulty": "medium"
+          },
+          {
+            "id": "AMB2",
+            "question": "How does Smith explain the origin and evolution of money?",
+            "expected_behavior": "Should find Book II discussion of money origins",
+            "should_cite_sources": true,
+            "difficulty": "hard"
+          },
+          {
+            "id": "AMB3",
+            "question": "What does Smith criticize about corporations and guilds? Why?",
+            "expected_behavior": "Should retrieve criticisms from Book I and context",
+            "should_cite_sources": true,
+            "difficulty": "hard"
+          }
+        ]
+      },
+      "edge_cases": {
+        "description": "Tricky questions testing system robustness",
+        "queries": [
+          {
+            "id": "EDGE1",
+            "question": "???",
+            "expected_behavior": "System should handle gibberish gracefully",
+            "should_cite_sources": false,
+            "difficulty": "easy"
+          },
+          {
+            "id": "EDGE2",
+            "question": "Smith",
+            "expected_behavior": "Should handle minimal query (1 word)",
+            "should_cite_sources": true,
+            "difficulty": "easy"
+          },
+          {
+            "id": "EDGE3",
+            "question": "Complete this quote from the book: 'It is not from the benevolence of...'",
+            "expected_behavior": "Should retrieve the famous butcher/brewer quote from Book I, Chapter II",
+            "should_cite_sources": true,
+            "difficulty": "easy"
+          }
+        ]
+      }
+    }
+  },
+  "evaluation_checklist": {
+    "for_each_query": [
+      "Does the system return relevant sources?",
+      "Are citations accurate (book, chapter, section)?",
+      "Is the response grounded in actual text or hallucinated?",
+      "For HALL queries: Does system refuse to make up information?",
+      "Is the response tone appropriate (confident for book content, cautious for gaps)?",
+      "Does streaming SSE work smoothly?"
+    ],
+    "metrics_to_track": {
+      "retrieval_accuracy": "% of C/H/P/AMB questions with correct sources",
+      "hallucination_resistance": "% of HALL questions where system correctly refuses",
+      "citation_quality": "Are cited passages actually relevant to the question?",
+      "source_coverage": "Does system use top-5 retrieved chunks effectively?",
+      "user_experience": "Is response quality good? Are sources well-formatted?"
+    }
+  }
+}
