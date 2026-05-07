@@ -74,7 +74,7 @@ async def _event_stream(
 @router.post("/")
 async def chat(
     request: ChatRequest,
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(get_session),  # noqa: B008
 ) -> StreamingResponse:
     log.info("Chat request received", question=request.question[:80])
 

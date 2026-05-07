@@ -10,8 +10,9 @@ Usage in endpoints:
         trace.log_generation(answer, tokens_used)
 """
 
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any, Generator
+from typing import Any
 
 import structlog
 

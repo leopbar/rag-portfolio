@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel
@@ -109,7 +109,7 @@ async def approve_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     user.status = UserStatus.approved
-    user.reviewed_at = datetime.now(timezone.utc)
+    user.reviewed_at = datetime.now(UTC)
     await session.commit()
 
 
@@ -124,5 +124,5 @@ async def reject_user(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     user.status = UserStatus.rejected
-    user.reviewed_at = datetime.now(timezone.utc)
+    user.reviewed_at = datetime.now(UTC)
     await session.commit()

@@ -24,8 +24,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from app.db.session import AsyncSessionLocal
-from app.rag.retriever import retrieve
+from app.db.session import AsyncSessionLocal  # noqa: E402
+from app.rag.retriever import retrieve  # noqa: E402
 
 log = structlog.get_logger()
 

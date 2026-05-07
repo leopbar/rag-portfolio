@@ -15,7 +15,7 @@ import time
 from pathlib import Path
 
 import structlog
-from sqlalchemy import delete, text
+from sqlalchemy import delete
 
 from app.db.models import Chunk
 from app.db.session import AsyncSessionLocal
