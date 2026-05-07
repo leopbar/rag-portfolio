@@ -39,7 +39,9 @@ This is a **portfolio project** demonstrating production-level RAG (Retrieval-Au
 
 ## See It In Action
 
-> *A demo GIF will be added here shortly showing the full flow: login → question → streaming response → source citations.*
+![Ask the Classics Demo](docs/demo.gif)
+
+*Full flow: Google login → typing a question → real-time streaming response → source citations from the book.*
 
 ---
 
