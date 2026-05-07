@@ -12,8 +12,8 @@ from dataclasses import dataclass
 
 import tiktoken
 
-BOOK_RE = re.compile(r"^BOOK\s+(I{1,3}V?|VI{0,3}|IV|IX|XI{0,3})\s*$", re.MULTILINE)
-CHAPTER_RE = re.compile(r"^CHAPTER\s+(I{1,3}V?|VI{0,3}|IV|IX|XI{0,3})\s*$", re.MULTILINE)
+BOOK_RE = re.compile(r"^BOOK\s+(I{1,3}V?|VI{0,3}|IV|IX|XI{0,3})\.?\s*$", re.MULTILINE)
+CHAPTER_RE = re.compile(r"^CHAPTER\s+(I{1,3}V?|VI{0,3}|IV|IX|XI{0,3})\.?\s*$", re.MULTILINE)
 
 
 @dataclass
