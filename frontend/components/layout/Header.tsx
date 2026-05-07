@@ -1,7 +1,10 @@
 import { auth, signOut } from "@/auth"
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "lbarretti@gmail.com"
+
 export async function Header() {
   const session = await auth()
+  const isAdmin = session?.user?.email === ADMIN_EMAIL
 
   return (
     <header className="border-b border-neutral-800 bg-neutral-950 px-6 py-4">
@@ -20,6 +23,15 @@ export async function Header() {
           >
             GitHub →
           </a>
+
+          {isAdmin && (
+            <a
+              href="/admin"
+              className="text-xs text-neutral-500 transition hover:text-neutral-300"
+            >
+              Admin →
+            </a>
+          )}
 
           {session?.user && (
             <div className="flex items-center gap-3">
