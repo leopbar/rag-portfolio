@@ -79,8 +79,8 @@ async def list_users(
     if filter_status:
         try:
             s = UserStatus(filter_status)
-        except ValueError:
-            raise HTTPException(status_code=400, detail=f"Invalid status: {filter_status}")
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=f"Invalid status: {filter_status}") from exc
         query = query.where(User.status == s)
 
     result = await session.execute(query)
