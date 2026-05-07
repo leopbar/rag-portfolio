@@ -4,17 +4,15 @@ Automated RAG System Tester
 
 Usage:
     python scripts/test_rag_system.py --queries-file ../test_queries.json
-    python scripts/test_rag_system.py --query "O que é divisão do trabalho?"
+    python scripts/test_rag_system.py --query "What is the division of labor?"
     python scripts/test_rag_system.py --interactive
 """
 
 import asyncio
 import json
-import sys
+from argparse import ArgumentParser
 from datetime import datetime
 from pathlib import Path
-from typing import Any
-from argparse import ArgumentParser
 
 import httpx
 
@@ -27,13 +25,12 @@ class RAGTester:
 
     async def test_query(self, query_id: str, question: str) -> dict:
         """Test a single query against the RAG system."""
-        print(f"\n📝 Testing {query_id}: {question[:60]}...")
+        print(f"\n[TEST] Testing {query_id}: {question[:60]}...")
 
         try:
-            # Call backend /chat endpoint
             response = await self.client.post(
-                f"{self.backend_url}/chat",
-                json={"query": question},
+                f"{self.backend_url}/chat/",
+                json={"question": question},
                 timeout=30.0,
             )
 
@@ -47,7 +44,6 @@ class RAGTester:
                     "sources": None,
                 }
 
-            # Parse streaming SSE response
             full_response = ""
             sources = []
 
@@ -55,21 +51,19 @@ class RAGTester:
                 if line.startswith("data:"):
                     data = line[5:].strip()
                     if data.startswith("[SOURCES]"):
-                        # Parse sources JSON
                         try:
                             sources_json = data.replace("[SOURCES]", "").strip()
                             sources = json.loads(sources_json)
                         except json.JSONDecodeError:
                             pass
                     else:
-                        # Accumulate response tokens
                         full_response += data
 
             return {
                 "query_id": query_id,
                 "question": question,
                 "status": "SUCCESS",
-                "response": full_response[:500],  # First 500 chars
+                "response": full_response[:500],
                 "sources": sources,
                 "num_sources": len(sources) if sources else 0,
             }
@@ -88,7 +82,7 @@ class RAGTester:
         """Test all queries from a JSON suite."""
         queries_path = Path(queries_file)
         if not queries_path.exists():
-            print(f"❌ File not found: {queries_file}")
+            print(f"File not found: {queries_file}")
             return []
 
         with open(queries_path) as f:
@@ -97,13 +91,13 @@ class RAGTester:
         all_queries = []
         categories = suite.get("evaluation_suite", {}).get("categories", {})
 
-        print(f"\n🚀 Starting RAG System Test Suite")
-        print(f"📊 Backend URL: {self.backend_url}")
-        print(f"⏰ Started at: {datetime.now().isoformat()}")
+        print("\n[START] RAG System Test Suite")
+        print(f"[INFO] Backend URL: {self.backend_url}")
+        print(f"[INFO] Started at: {datetime.now().isoformat()}")
 
         for category_name, category_data in categories.items():
             queries = category_data.get("queries", [])
-            print(f"\n📂 Category: {category_name} ({len(queries)} queries)")
+            print(f"\n[CAT] {category_name} ({len(queries)} queries)")
 
             for query_data in queries:
                 result = await self.test_query(
@@ -113,9 +107,8 @@ class RAGTester:
                 self.results.append({**result, "category": category_name})
                 all_queries.append(result)
 
-                # Print status inline
-                status_emoji = "✅" if result["status"] == "SUCCESS" else "❌"
-                print(f"  {status_emoji} {result['query_id']}: {result['status']}")
+                status_mark = "[OK]" if result["status"] == "SUCCESS" else "[FAIL]"
+                print(f"  {status_mark} {result['query_id']}: {result['status']}")
                 if result.get("num_sources"):
                     print(f"     Sources found: {result['num_sources']}")
 
@@ -125,7 +118,6 @@ class RAGTester:
         """Generate a JSON report of test results."""
         total = len(self.results)
         successes = sum(1 for r in self.results if r["status"] == "SUCCESS")
-        hallucinations = sum(1 for r in self.results if r.get("should_hallucinate") == False)
 
         report = {
             "metadata": {
@@ -138,10 +130,10 @@ class RAGTester:
             "summary_by_category": self._summarize_by_category(),
         }
 
-        with open(output_file, "w") as f:
+        with open(output_file, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
-        print(f"\n📊 Report saved to: {output_file}")
+        print(f"\n[REPORT] Saved to: {output_file}")
 
     def _summarize_by_category(self) -> dict:
         """Summarize results by category."""
@@ -168,22 +160,19 @@ class RAGTester:
         errors = sum(1 for r in self.results if r["status"] == "ERROR")
 
         print("\n" + "=" * 60)
-        print("📊 TEST SUMMARY")
+        print("TEST SUMMARY")
         print("=" * 60)
         print(f"Total Queries:  {total}")
-        print(f"Successful:     {successes} ✅ ({100*successes/total:.1f}%)")
-        print(f"Errors:         {errors} ❌")
+        print(f"Successful:     {successes} ({100 * successes / total:.1f}%)")
+        print(f"Errors:         {errors}")
         print(f"Completed at:   {datetime.now().isoformat()}")
         print("=" * 60)
 
-        # Category breakdown
         summary = self._summarize_by_category()
         print("\nBy Category:")
         for category, stats in summary.items():
             rate = 100 * stats["success"] / stats["total"]
             print(f"  {category}: {stats['success']}/{stats['total']} ({rate:.0f}%)")
-
-        print("\n💾 Full report: test_results.json")
 
     async def close(self):
         """Clean up HTTP client."""
@@ -192,14 +181,8 @@ class RAGTester:
 
 async def main():
     parser = ArgumentParser(description="Test RAG system")
-    parser.add_argument(
-        "--queries-file",
-        help="Path to test_queries.json",
-    )
-    parser.add_argument(
-        "--query",
-        help="Test a single query",
-    )
+    parser.add_argument("--queries-file", help="Path to test_queries.json")
+    parser.add_argument("--query", help="Test a single query")
     parser.add_argument(
         "--backend-url",
         default="http://localhost:8000",
@@ -213,7 +196,7 @@ async def main():
     parser.add_argument(
         "--interactive",
         action="store_true",
-        help="Interactive mode (ask user for queries)",
+        help="Interactive mode",
     )
 
     args = parser.parse_args()
@@ -221,30 +204,27 @@ async def main():
 
     try:
         if args.query:
-            # Single query mode
             result = await tester.test_query("MANUAL", args.query)
             tester.results.append(result)
-            print(f"\n✅ Response:\n{result['response'][:300]}")
+            print(f"\n[OK] Response:\n{result['response'][:300]}")
             if result.get("sources"):
                 print(f"\nSources: {len(result['sources'])} found")
 
         elif args.queries_file:
-            # Suite mode
             await tester.test_suite(args.queries_file)
             tester.generate_report(args.output)
             tester.print_summary()
 
         elif args.interactive:
-            # Interactive mode
-            print("🎯 Interactive Mode - Press Ctrl+C to exit\n")
+            print("Interactive Mode - Press Ctrl+C to exit\n")
             while True:
                 query = input("Enter query: ").strip()
                 if not query:
                     continue
                 result = await tester.test_query("INTERACTIVE", query)
-                print(f"\n✅ Response (first 300 chars):\n{result['response'][:300]}")
+                print(f"\n[OK] Response (first 300 chars):\n{result['response'][:300]}")
                 if result.get("sources"):
-                    print(f"\n📚 Sources ({len(result['sources'])} found):")
+                    print(f"\n[SOURCES] ({len(result['sources'])} found):")
                     for src in result["sources"][:3]:
                         print(f"  - {src.get('book', '?')} {src.get('chapter', '?')}")
                 print()
@@ -253,7 +233,7 @@ async def main():
             parser.print_help()
 
     except KeyboardInterrupt:
-        print("\n\n⏹️ Test interrupted by user")
+        print("\n\n[STOP] Test interrupted by user")
     finally:
         await tester.close()
 
