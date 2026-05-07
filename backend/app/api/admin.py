@@ -37,7 +37,7 @@ class UserOut(BaseModel):
 
 async def _require_admin(
     x_admin_email: str | None = Header(default=None),
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(get_session),  # noqa: B008
 ) -> User:
     if not x_admin_email:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing X-Admin-Email header")
@@ -53,7 +53,7 @@ async def _require_admin(
 @router.post("/users/register", response_model=RegisterResponse)
 async def register_user(
     body: RegisterRequest,
-    session: AsyncSession = Depends(get_session),
+    session: AsyncSession = Depends(get_session),  # noqa: B008
 ) -> RegisterResponse:
     """Called by NextAuth on every sign-in. Creates user if new, returns current status."""
     result = await session.execute(select(User).where(User.email == body.email))
@@ -71,8 +71,8 @@ async def register_user(
 @router.get("/admin/users", response_model=list[UserOut])
 async def list_users(
     filter_status: str | None = None,
-    admin: User = Depends(_require_admin),
-    session: AsyncSession = Depends(get_session),
+    admin: User = Depends(_require_admin),  # noqa: B008
+    session: AsyncSession = Depends(get_session),  # noqa: B008
 ) -> list[UserOut]:
     """List all non-admin users, optionally filtered by status."""
     query = select(User).where(User.is_admin == False).order_by(User.created_at.desc())  # noqa: E712
@@ -101,8 +101,8 @@ async def list_users(
 @router.post("/admin/users/{user_id}/approve", status_code=status.HTTP_204_NO_CONTENT)
 async def approve_user(
     user_id: int,
-    admin: User = Depends(_require_admin),
-    session: AsyncSession = Depends(get_session),
+    admin: User = Depends(_require_admin),  # noqa: B008
+    session: AsyncSession = Depends(get_session),  # noqa: B008
 ) -> None:
     result = await session.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
@@ -116,8 +116,8 @@ async def approve_user(
 @router.post("/admin/users/{user_id}/reject", status_code=status.HTTP_204_NO_CONTENT)
 async def reject_user(
     user_id: int,
-    admin: User = Depends(_require_admin),
-    session: AsyncSession = Depends(get_session),
+    admin: User = Depends(_require_admin),  # noqa: B008
+    session: AsyncSession = Depends(get_session),  # noqa: B008
 ) -> None:
     result = await session.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
