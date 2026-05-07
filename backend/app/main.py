@@ -23,7 +23,7 @@ app = FastAPI(
 
 _cors_origins = (
     ["*"] if settings.debug
-    else ["https://rag.yourdomain.com"]
+    else ["https://rag-classics.duckdns.org"]
 )
 
 app.add_middleware(
