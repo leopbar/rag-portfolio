@@ -22,7 +22,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
     name: Mapped[str | None] = mapped_column(Text, nullable=True)
     picture: Mapped[str | None] = mapped_column(Text, nullable=True)
-    status: Mapped[UserStatus] = mapped_column(Enum(UserStatus), nullable=False, default=UserStatus.pending)
+    status: Mapped[UserStatus] = mapped_column(Enum(UserStatus, name="user_status"), nullable=False, default=UserStatus.pending)
     is_admin: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     reviewed_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
