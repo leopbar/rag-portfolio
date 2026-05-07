@@ -4,8 +4,7 @@
 
 ### A production-grade RAG chatbot that answers questions about *The Wealth of Nations* (Adam Smith, 1776) — citing exact passages from the book.
 
-🚀 **[LIVE DEMO: https://rag-classics.duckdns.org](https://rag-classics.duckdns.org)**
-
+[![Live Demo](https://img.shields.io/badge/Live_Demo-rag--classics.duckdns.org-28A745?logo=rocket&logoColor=white)](https://rag-classics.duckdns.org)
 [![CI](https://github.com/leopbar/rag-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/leopbar/rag-portfolio/actions/workflows/ci.yml)
 &nbsp;
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
